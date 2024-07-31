@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '../dashLayout';
-import Courses from '@/components/AdminCourses/courses';
+import Courses from '@/components/Courses/courses';
 
 function page() {
   return (
