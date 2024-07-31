@@ -15,17 +15,18 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import Button from '@mui/material/Button';
 
-//components
-import AddMember from "./AddMember";
+// Components
+import dynamic from 'next/dynamic';
+const AddMember = dynamic(() => import('./AddMember'), { ssr: false });
 
-//axios
+// Axios
 import axios from 'axios';
 
-//confirm alert
+// Confirm alert
 import { confirmAlert } from 'react-confirm-alert'; 
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
-//toast
+// Toast
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -43,30 +44,34 @@ export interface Members {
 }
 
 export default function MemberList() {
-
-  // Page change
+  // State for pagination
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  // Handlers for pagination
+  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(+event.target.value);
+    setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
-  // Toggle add user
+  // State for adding and editing user
   const [addUser, setAddUser] = useState(false);
-  const handleChange = () => {
-    setAddUser(false);
-  }
-
-  // Data fetch
-  const [data, setData] = useState<Members[]>([]);
   const [rows, setRows] = useState<Members | undefined>();
 
+  const handleChange = () => {
+    setAddUser(false);
+  };
+
+  // State for data and search
+  const [data, setData] = useState<Members[]>([]);
+  const [copyData, setCopyData] = useState<Members[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  // Fetch data
   const getData = useCallback(() => {
     axios.get("https://backend-4c5c.onrender.com/api/member/")
       .then(response => {
@@ -77,18 +82,18 @@ export default function MemberList() {
       })
       .catch(err => {
         console.log("Error ", err);
-      })
-  },[])
+      });
+  }, []);
 
   useEffect(() => {
     getData();
-  }, [addUser,getData]);
+  }, [addUser, getData]);
 
   // Add function
   const addFunction = () => {
     setAddUser(true);
     setRows(undefined);
-  }
+  };
 
   // Edit function
   const editFunction = (data: Members) => {
@@ -144,13 +149,9 @@ export default function MemberList() {
           transition: Bounce,
         });
       });
-  }
+  };
 
   // Search function
-  const [copyData, setCopyData] = useState<Members[]>([]);
-  const [searchQuery, setSearchQuery] = useState<string>('');
-
-  
   const searchData = useCallback((searchQuery: string) => {
     let filterData: Members[] = copyData;
     if (searchQuery) {
@@ -159,11 +160,11 @@ export default function MemberList() {
       );
     }
     setData(filterData);
-  },[copyData])
+  }, [copyData]);
 
   useEffect(() => {
     searchData(searchQuery);
-  }, [searchQuery,searchData]);
+  }, [searchQuery, searchData]);
 
   return (
     <>
@@ -216,7 +217,7 @@ export default function MemberList() {
                 <TableBody>
                   {data
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((member, index) => (
+                    .map((member) => (
                       <TableRow hover role="checkbox" tabIndex={-1} key={member.id}>
                         <TableCell align='left'>
                           {member.member_name}
