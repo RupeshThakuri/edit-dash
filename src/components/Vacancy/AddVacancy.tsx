@@ -15,16 +15,16 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 const AddVacancy = ({ handleAddVacancy, rows }) => {
     //taking inputs and setting the variables
     const [formData, setFormData] = useState({
-        id: rows.id,
-        job_title: rows.job_title,
-        location: rows.location,
-        position_type: rows.position_type,
-        no_experience: rows.no_experience,
-        company_overview: rows.company_overview,
-        deadline: rows.deadline,
-        no_of_hiring: rows.no_of_hiring,
-        description: rows.description,
-        vacancy_image: null, // Initialize as null to store the file object
+        id: rows?.id || '',
+        job_title: rows?.job_title || '',
+        location: rows?.location || '',
+        position_type: rows?.position_type || '',
+        no_experience: rows?.no_experience || 0,
+        company_overview: rows?.company_overview || '',
+        deadline: rows?.deadline || 0,
+        no_of_hiring: rows?.no_of_hiring || 0,
+        description: rows?.description || '',
+        vacancy_image: null,
     });
 
     const handleChange = (e) => {
