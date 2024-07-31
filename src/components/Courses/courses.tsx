@@ -1,29 +1,28 @@
 "use client";
 
 import React, { useEffect, useState, useCallback } from 'react';
+import dynamic from 'next/dynamic'; // Import dynamic from next
 import { Button } from '@mui/material';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import axios from 'axios';
 import Image from 'next/image';
 
-//confirm alert
-import { confirmAlert } from 'react-confirm-alert'; // Import
+// Confirm alert
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
-//toast
+// Toast
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-//components
-import AddCourse from './addCourse';
+// Components
+const AddCourse = dynamic(() => import('./addCourse'), { ssr: false });
 
-//type
+// Types
 import { Course } from '@/types/courses';
 
 const Courses = () => {
-    //data
     const [courseDetail, setCoursesDetail] = useState<Course[]>([]);
-    const [copyData, setCopyData] = useState<Course[]>([]); // copying to use later in the filtering process
+    const [copyData, setCopyData] = useState<Course[]>([]); // Copying to use later in the filtering process
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [addcourse, setAddcourse] = useState(false);
     const [getIDToogle, setGetIDToogle] = useState<number | null>(null);
@@ -67,18 +66,22 @@ const Courses = () => {
     };
 
     const deleteFunction = (data: Course) => {
-        confirmAlert({
-            title: 'Confirm to submit',
-            message: 'Are you sure you want to delete this data?',
-            buttons: [
-                {
-                    label: 'Yes',
-                    onClick: () => deleteRow(data)
-                },
-                {
-                    label: 'No',
-                }
-            ]
+        // Use dynamic import for confirmAlert
+        import('react-confirm-alert').then(module => {
+            const { confirmAlert } = module;
+            confirmAlert({
+                title: 'Confirm to submit',
+                message: 'Are you sure you want to delete this data?',
+                buttons: [
+                    {
+                        label: 'Yes',
+                        onClick: () => deleteRow(data)
+                    },
+                    {
+                        label: 'No',
+                    }
+                ]
+            });
         });
         setGetIDToogle(null);
     };
@@ -186,7 +189,7 @@ const Courses = () => {
                                     <Image className="w-24 h-24 mb-3 rounded-full shadow-lg" src={course.course_image || "/Images/course.png"} alt="Course image" width={90} height={70} />
                                     <h5 className="mb-1 text-xl font-medium text-gray-900">{course.course_name}</h5>
                                     <span className="text-sm text-gray-500 ">0 months</span> 
-                                    {/* missed the value of duration in the api so setting 0 for now */}
+                                    {/* Missed the value of duration in the API so setting 0 for now */}
                                     <div className="flex mt-4 md:mt-6">
                                         <a href="#" className="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 ">See More Detail</a>
                                     </div>
