@@ -23,6 +23,6 @@
       }
     ]
   },
-  "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx", "src/components/AdminMembers/AddMember.jsx", "src/components/AdminGallery/addgallery.jsx", "src/components/AdminGallery/gallery.jsx"],
+  "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx", "src/components/Members/AddMember.jsx", "src/components/AdminGallery/addgallery.jsx", "src/components/AdminGallery/gallery.jsx"],
   "exclude": ["node_modules"]
 }
