@@ -9,12 +9,12 @@ import { Client } from '@/types/client';
 
 const AddClients = ({ handleChangeToogle, rows  }) => {
   const [formData, setFormData] = useState<Client>({
-    id: rows.id,
-    client_name: rows.client_name,
-    number: rows.number,
-    review: rows.review,
-    gmail: rows.gmail,
-    client_image: rows.client_image,
+    id: rows?.id || '',
+    client_name: rows?.client_name || '',
+    number: rows?.number || 0,
+    review: rows?.review || '',
+    gmail: rows?.gmail || '',
+    client_image: null,
   });
 
   const handleChange = (e) => {

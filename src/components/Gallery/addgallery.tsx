@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const AddGallery = ({ handleChangeToogle, data }) => {
     const [formData, setFormData] = useState({
-        id: data.id,
+        id: data?.id || '',
         name: data.name || '',
         image: null,
         text: data.text || '',
