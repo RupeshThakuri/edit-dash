@@ -1,6 +1,6 @@
 export type Gallery = {
     id: number,
     name: string,
-    image: string | null,
+    image: string,
     text: string,
 }
