@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import * as React from 'react';
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 
 // for table
 import Paper from '@mui/material/Paper';
@@ -17,16 +17,13 @@ import TableRow from '@mui/material/TableRow';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import ControlPointIcon from '@mui/icons-material/ControlPoint';
 
 // icon for the applicant
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 
 // axios
 import axios from 'axios';
-
-// confirm alert
-import { confirmAlert } from 'react-confirm-alert'; // Import
-import 'react-confirm-alert/src/react-confirm-alert.css';
 
 // toast
 import { ToastContainer, toast, Bounce } from 'react-toastify';
@@ -35,36 +32,23 @@ import 'react-toastify/dist/ReactToastify.css';
 // import extra files
 import { Vacancies } from '@/types/vacancy';
 import Button from '@mui/material/Button';
-import ControlPointIcon from '@mui/icons-material/ControlPoint';
 
-// files import
-import AddVacancy from './AddVacancy';
+// files import dynamically
+const AddVacancy = dynamic(() => import('./AddVacancy'), { ssr: false });
 
 const VacancyList = () => {
-    // for redirecting add and edit
     const [addVacancy, setAddVacancy] = useState(false);
     const [rows, setRows] = useState<Vacancies | undefined>();
     const handleAddVacancy = () => {
         setAddVacancy(false);
-    }
+    };
 
-    // for table page
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
-
     const [data, setData] = useState<Vacancies[]>([]);
-    const [copyData, setCopyData] = useState<Vacancies[]>([]); // copying to use later in the filtering process
+    const [copyData, setCopyData] = useState<Vacancies[]>([]);
+    const [searchQuery, setSearchQuery] = useState<string>('');
 
-    const handleChangePage = (event: unknown, newPage: number) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
-
-    // for setting data using api
     useEffect(() => {
         getData();
     }, [addVacancy]);
@@ -79,22 +63,25 @@ const VacancyList = () => {
             })
             .catch(err => {
                 console.log("Error ", err);
-            })
-    }
+            });
+    };
 
     const deleteFunction = (data: Vacancies) => {
-        confirmAlert({
-            title: 'Confirm to submit',
-            message: 'Are you sure you want to delete this data?',
-            buttons: [
-                {
-                    label: 'Yes',
-                    onClick: () => deleteRow(data)
-                },
-                {
-                    label: 'No',
-                }
-            ]
+        import('react-confirm-alert').then(module => {
+            const { confirmAlert } = module;
+            confirmAlert({
+                title: 'Confirm to submit',
+                message: 'Are you sure you want to delete this data?',
+                buttons: [
+                    {
+                        label: 'Yes',
+                        onClick: () => deleteRow(data)
+                    },
+                    {
+                        label: 'No',
+                    }
+                ]
+            });
         });
     };
 
@@ -129,7 +116,7 @@ const VacancyList = () => {
                     transition: Bounce,
                 });
             });
-    }
+    };
 
     const editFunction = (data: Vacancies) => {
         setAddVacancy(true);
@@ -140,9 +127,6 @@ const VacancyList = () => {
         setAddVacancy(true);
         setRows(undefined);
     };
-
-    // for search function
-    const [searchQuery, setSearchQuery] = useState<string>('');
 
     const searchData = useCallback((searchQuery: string) => {
         let filterData: Vacancies[] = copyData;
@@ -162,34 +146,28 @@ const VacancyList = () => {
         searchData(searchQuery);
     }, [searchQuery, searchData]);
 
-    // table responsive sizes
+    // Handle window resize
     const [widthTable, setWidthTable] = useState<number>(0);
-    const [screenWidth, setScreenwidth] = useState<number>(window.innerWidth);
-
     useEffect(() => {
         const handleResize = () => {
-            setScreenwidth(window.innerWidth);
+            const screenWidth = window.innerWidth;
+            if (screenWidth < 600) {
+                setWidthTable(300);
+            } else if (screenWidth < 900) {
+                setWidthTable(800);
+            } else {
+                setWidthTable(1400);
+            }
         };
 
-        // Add event listener for window resize
+        handleResize(); // Initial call
         window.addEventListener('resize', handleResize);
-
-        if (screenWidth < 600 && screenWidth > 0) {
-            setWidthTable(300);
-        }
-        else if (screenWidth < 900 && screenWidth > 600) {
-            setWidthTable(800);
-        }
-        else if (screenWidth > 900) {
-            setWidthTable(1400);
-        }
 
         return () => {
             window.removeEventListener('resize', handleResize);
         };
-    }, [screenWidth]);
+    }, []);
 
-    // sorting according to data
     const [sortDirections, setSortDirections] = useState({
         jobTitle: false,
         position: false,
@@ -235,7 +213,18 @@ const VacancyList = () => {
 
     const redirectTo = () => {
         window.open("https://docs.google.com/spreadsheets/d/1Mtx7Oy9IKjJE-Y-vGVcc4o9l9q8sjFU3Xw-HnUjg6sU/edit?resourcekey#gid=1418698129", "_blank");
-    }
+    };
+
+    //table pagination
+    const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+        setPage(newPage);
+    };
+    
+    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0); 
+    };
+    
 
     return (
         <div style={{ overflowX: 'auto' }}>
@@ -355,7 +344,7 @@ const VacancyList = () => {
                                                         </div>
                                                     </TableCell>
                                                 </TableRow>
-                                            )
+                                            );
                                         })
                                     }
                                 </TableBody>
@@ -374,7 +363,7 @@ const VacancyList = () => {
                 </>
             )}
         </div>
-    )
-}
+    );
+};
 
 export default VacancyList;
