@@ -168,10 +168,9 @@ export default function MemberList() {
   }, [searchQuery, searchData]);
 
 
-  //ckeditor stripe
+  //ckeditor stripe (to reove unnessary html tags)
   function stripHtml(html) {
-    let doc = new DOMParser().parseFromString(html, 'text/html');
-    return doc.body.textContent || "";
+    return html.replace(/<[^>]*>?/gm, '');
   }
 
   return (
