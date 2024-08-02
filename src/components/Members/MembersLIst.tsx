@@ -30,9 +30,8 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-//ck editor stripe (to reove unnessary html tags)
+// Import sanitize-html
 import sanitizeHtml from 'sanitize-html';
-
 
 // Define the Members type according to the API response
 export interface Members {
@@ -166,122 +165,114 @@ export default function MemberList() {
     setData(filterData);
   }, [copyData]);
 
-
   useEffect(() => {
     searchData(searchQuery);
   }, [searchQuery, searchData]);
 
-
-  //ckeditor stripe (to reove unnessary html tags)
-
-  export default function MemberList() {
-    // State and other functions remain the same...
-  
-    return (
-      <>
-        {addUser ? (
-          <AddMember handleAddSection={handleChange} rows={rows} />
-        ) : (
-          <>
-            <ToastContainer />
-            <h2 className='font-bold mb-4'>Members</h2>
-            <div className="flex justify-between mb-2">
-              <input
-                type="text"
-                placeholder='search members'
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className='mb-2 px-2 py-2 border-rounded'
-              />
-              <Button variant="outlined" className='mb-2' endIcon={<ControlPointIcon />} onClick={addFunction}>
-                Add User
-              </Button>
-            </div>
-            <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-              <TableContainer sx={{ maxHeight: 440 }}>
-                <Table stickyHeader aria-label="sticky table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell align="left" style={{ minWidth: 100 }}>
-                        <p className='font-bold'>Name</p>
-                      </TableCell>
-                      <TableCell align="left" style={{ minWidth: 100 }}>
-                        <p className='font-bold'>Position</p>
-                      </TableCell>
-                      <TableCell align="right" style={{ minWidth: 50 }}>
-                        <p className='font-bold'>Salary</p>
-                      </TableCell>
-                      <TableCell align="center" style={{ minWidth: 50 }}>
-                        <p className='font-bold'>Contact</p>
-                      </TableCell>
-                      <TableCell align="center" style={{ minWidth: 50 }}>
-                        <p className='font-bold'>Working Days</p>
-                      </TableCell>
-                      <TableCell align="center" style={{ minWidth: 50 }}>
-                        <p className='font-bold'>Description</p>
-                      </TableCell>
-                      <TableCell align="right" style={{ minWidth: 100 }}>
-                        <p className='font-bold'>Action</p>
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {data
-                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((member) => (
-                        <TableRow hover role="checkbox" tabIndex={-1} key={member.id}>
-                          <TableCell align='left'>
-                            {member.member_name}
-                          </TableCell>
-                          <TableCell align='left'>
-                            {member.position}
-                          </TableCell>
-                          <TableCell align='right'>
-                            {member.salary}
-                          </TableCell>
-                          <TableCell align='center'>
-                            {member.phone}
-                          </TableCell>
-                          <TableCell align='center'>
-                            {member.working_days}
-                          </TableCell>
-                          <TableCell align='center'>
-                            <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(member.description, {
-                              allowedTags: ['b', 'i', 'em', 'strong', 'a'],
-                              allowedAttributes: {
-                                'a': ['href']
-                              },
-                            }) }} />
-                          </TableCell>
-                          <TableCell align='right'>
-                            <div className='flex justify-center'>
-                              <div className='cursor-pointer text-green-600 mr-2' onClick={() => editFunction(member)}>
-                                <EditIcon />
-                              </div>
-                              <div className='cursor-pointer text-orange-600' onClick={() => deleteFunction(member)}>
-                                <DeleteIcon />
-                              </div>
+  return (
+    <>
+      {addUser ? (
+        <AddMember handleAddSection={handleChange} rows={rows} />
+      ) : (
+        <>
+          <ToastContainer />
+          <h2 className='font-bold mb-4'>Members</h2>
+          <div className="flex justify-between mb-2">
+            <input
+              type="text"
+              placeholder='search members'
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className='mb-2 px-2 py-2 border-rounded'
+            />
+            <Button variant="outlined" className='mb-2' endIcon={<ControlPointIcon />} onClick={addFunction}>
+              Add User
+            </Button>
+          </div>
+          <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+            <TableContainer sx={{ maxHeight: 440 }}>
+              <Table stickyHeader aria-label="sticky table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="left" style={{ minWidth: 100 }}>
+                      <p className='font-bold'>Name</p>
+                    </TableCell>
+                    <TableCell align="left" style={{ minWidth: 100 }}>
+                      <p className='font-bold'>Position</p>
+                    </TableCell>
+                    <TableCell align="right" style={{ minWidth: 50 }}>
+                      <p className='font-bold'>Salary</p>
+                    </TableCell>
+                    <TableCell align="center" style={{ minWidth: 50 }}>
+                      <p className='font-bold'>Contact</p>
+                    </TableCell>
+                    <TableCell align="center" style={{ minWidth: 50 }}>
+                      <p className='font-bold'>Working Days</p>
+                    </TableCell>
+                    <TableCell align="center" style={{ minWidth: 50 }}>
+                      <p className='font-bold'>Description</p>
+                    </TableCell>
+                    <TableCell align="right" style={{ minWidth: 100 }}>
+                      <p className='font-bold'>Action</p>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {data
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((member) => (
+                      <TableRow hover role="checkbox" tabIndex={-1} key={member.id}>
+                        <TableCell align='left'>
+                          {member.member_name}
+                        </TableCell>
+                        <TableCell align='left'>
+                          {member.position}
+                        </TableCell>
+                        <TableCell align='right'>
+                          {member.salary}
+                        </TableCell>
+                        <TableCell align='center'>
+                          {member.phone}
+                        </TableCell>
+                        <TableCell align='center'>
+                          {member.working_days}
+                        </TableCell>
+                        <TableCell align='center'>
+                          <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(member.description, {
+                            allowedTags: ['b', 'i', 'em', 'strong', 'a'],
+                            allowedAttributes: {
+                              'a': ['href']
+                            },
+                          }) }} />
+                        </TableCell>
+                        <TableCell align='right'>
+                          <div className='flex justify-center'>
+                            <div className='cursor-pointer text-green-600 mr-2' onClick={() => editFunction(member)}>
+                              <EditIcon />
                             </div>
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    }
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
-                component="div"
-                count={data.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
-            </Paper>
-          </>
-        )}
-      </>
-    );
-  }
+                            <div className='cursor-pointer text-orange-600' onClick={() => deleteFunction(member)}>
+                              <DeleteIcon />
+                            </div>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  }
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[10, 25, 100]}
+              component="div"
+              count={data.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </Paper>
+        </>
+      )}
+    </>
+  );
 }
