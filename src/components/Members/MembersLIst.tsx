@@ -23,7 +23,7 @@ const AddMember = dynamic(() => import('./AddMember'), { ssr: false });
 import axios from 'axios';
 
 // Confirm alert
-import { confirmAlert } from 'react-confirm-alert'; 
+import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
 // Toast
@@ -162,9 +162,17 @@ export default function MemberList() {
     setData(filterData);
   }, [copyData]);
 
+
   useEffect(() => {
     searchData(searchQuery);
   }, [searchQuery, searchData]);
+
+
+  //ckeditor stripe
+  function stripHtml(html) {
+    let doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.body.textContent || "";
+  }
 
   return (
     <>
@@ -235,7 +243,7 @@ export default function MemberList() {
                           {member.working_days}
                         </TableCell>
                         <TableCell align='center'>
-                          {member.description}
+                          {stripHtml(member.description)}
                         </TableCell>
                         <TableCell align='right'>
                           <div className='flex justify-center'>
